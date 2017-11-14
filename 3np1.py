@@ -3,21 +3,20 @@ import time
 
 
 results = {}
-def compute(n):
+def collatz(n):
     n_start = n
     if results.get(n_start, 0) > 0:
         return results[n_start]
-    cycle = []
-    while n != 1:
-        cycle.append(n)
-        if n % 2 == 1:
-            n = 3*n + 1
-        else:
-            n = n/2
-    cycle.append(1)
-    for i in range(len(cycle)):
-        results[cycle[i]] = len(cycle) - i
-    return len(cycle)
+    
+    answer = 1
+    if n == 1:
+        answer = 1
+    elif n % 2 == 1:
+        answer = collatz(3*n + 1) + 1
+    else:
+        answer = collatz(n/2) + 1
+    results[n_start] = answer
+    return answer
 
 start = time.time()
 for line in sys.stdin:
@@ -26,7 +25,7 @@ for line in sys.stdin:
     right = max(pair[0], pair[1])
     max_cycle = 1
     for n in range(left, right+1):
-        max_cycle = max(max_cycle, compute(n))
+        max_cycle = max(max_cycle, collatz(n))
     print(pair[0], pair[1], max_cycle)
 end = time.time()
 elapsed_seconds = float("%.2f" % (end - start))
